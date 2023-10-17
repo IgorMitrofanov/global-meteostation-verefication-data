@@ -10,16 +10,11 @@ def get_data(params):
     df = pd.DataFrame(docs)
     return df
 
-
 def main():
     page = 0
-    year = '*' # * - все года
+    year = '*'
     modification = 'Сокол-М1'
-    filter_value = f'verification_year:{year} AND mi.modification:{modification}'  
-
-    # Создаем пустой DataFrame для сохранения данных
-    all_data = pd.DataFrame()
-
+    filter_value = f'verification_year:{year} AND mi.mitype:{modification}'  
     while True:
         # Создаем параметры запроса
         params = {
@@ -32,8 +27,6 @@ def main():
         }
 
         df = get_data(params)
-        # Добавляем полученные данные в общий DataFrame
-        all_data = pd.concat([all_data, df], ignore_index=True)
 
         # Выводим данные
         print(df)
@@ -45,10 +38,7 @@ def main():
 
         # Увеличиваем страницу
         page += 1
-    # Сохраняем все данные в файл Excel
-    all_data.to_excel('verification_data.xlsx', index=False, engine='openpyxl')
 
-    
 if __name__ == '__main__':
     main()
 
