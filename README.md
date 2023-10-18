@@ -25,6 +25,6 @@
 5. Провести первичный анализ полученных данных.
 
 Результаты:
-1. Парсер представлен в файле RST_automatic_parser_to_csv.py, с гибкой настройков требуемых фильтров;
-2. Выгруженные, объединенные и итоговые данные (с требуемыми полями) находятся в каталоге data, скрипт для мерджа данных представлен в файле data_merging.py;
-3. Анализ представлен в файле analytics.ipynb, а так же в файле analytics.html для презентации.
+1. Парсер представлен в файле [RST_automatic_parser_to_csv.py](https://github.com/IgorMitrofanov/global-meteostation-data-parser/blob/main/RST_automatic_parser_to_csv.py), с гибкой настройков требуемых фильтров;
+2. Выгруженные, объединенные и итоговые данные (с требуемыми полями) находятся в каталоге [data](https://github.com/IgorMitrofanov/global-meteostation-data-parser/tree/main/data), скрипт для мерджа данных представлен в файле [data_merging.py](https://github.com/IgorMitrofanov/global-meteostation-data-parser/blob/main/data_merging.py);
+3. Анализ представлен в файле [analytics.ipynb](https://github.com/IgorMitrofanov/global-meteostation-data-parser/blob/main/analytics.ipynb), а так же в файле [analytics.html](https://github.com/IgorMitrofanov/global-meteostation-data-parser/blob/main/analytics.html) для презентации.
