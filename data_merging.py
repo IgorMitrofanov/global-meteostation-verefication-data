@@ -9,4 +9,4 @@ df_sokol = pd.read_excel('data/all_years_СОКОЛ-М1_Станции.xlsx')
 
 df_all = pd.concat([df_davis, df_vaisala, df_icb, df_lufft, df_safonovskiy, df_sokol])
 
-df_all.to_excel('all_data.xlsx')
+df_all.to_excel('data/all_data.xlsx')

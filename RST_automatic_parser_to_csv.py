@@ -14,8 +14,8 @@ def get_data(params):
 def main():
     page = 0
     year = '*'
-    mitype = '*WXT*'
-    mititle = '*Метеостанции*'
+    mitype = '*СОКОЛ-М1*' # Фильтр ТИП СИ
+    mititle = '*Станции*' # Фильтр НАИМЕНОВАНИЕ СИ
     filter_value = f'verification_year:{year} AND mi.mitype:{mitype} AND mi.mititle:{mititle}'
     rows_appended = 0
     all_data = pd.DataFrame()
@@ -27,7 +27,7 @@ def main():
             'fl': '*',
             'sort': 'verification_date desc,org_title asc',
             'rows': 100,
-            'start': page * 20
+            'start': page * 100
         }
 
         df = get_data(params)
@@ -51,7 +51,7 @@ def main():
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
 
-    all_data.to_excel(f'data/{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
+    all_data.to_excel(f'{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
 
 if __name__ == '__main__':
     main()
