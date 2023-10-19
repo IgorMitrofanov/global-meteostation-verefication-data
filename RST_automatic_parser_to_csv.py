@@ -14,8 +14,8 @@ def get_data(params):
 def main():
     page = 0
     year = '*'
-    mitype = '*СОКОЛ-М1*' # Фильтр ТИП СИ
-    mititle = '*Станции*' # Фильтр НАИМЕНОВАНИЕ СИ
+    mitype = '*ДД*' # Фильтр ТИП СИ
+    mititle = '*Датчики**атмосферного**давления*' # Фильтр НАИМЕНОВАНИЕ СИ
     filter_value = f'verification_year:{year} AND mi.mitype:{mitype} AND mi.mititle:{mititle}'
     rows_appended = 0
     all_data = pd.DataFrame()

@@ -7,6 +7,16 @@ df_lufft = pd.read_excel('data/all_years_WSUMB_Станции.xlsx')
 df_safonovskiy = pd.read_excel('data/all_years_М-49М_Станции.xlsx')
 df_sokol = pd.read_excel('data/all_years_СОКОЛ-М1_Станции.xlsx')
 
-df_all = pd.concat([df_davis, df_vaisala, df_icb, df_lufft, df_safonovskiy, df_sokol])
+# Минимакс-94
+df_dvg = pd.read_excel('data/all_years_ДВГ_Датчикивлажностиитемпературыгрунта.xlsx')
+df_dvn = pd.read_excel('data/all_years_ДВН_Датчикинаправленияветра.xlsx')
+df_dvs = pd.read_excel('data/all_years_ДВС_Датчикискоростиветра.xlsx')
+df_dd = pd.read_excel('data/all_years_ДД_Датчикиатмосферногодавления.xlsx')
+df_do = pd.read_excel('data/all_years_ДО_Датчикиосадков.xlsx')
+df_dtv = pd.read_excel('data/all_years_ДТВ_Датчикитемпературыивлажностивоздуха.xlsx')
+
+df_minimax = pd.concat([df_dvg, df_dvn, df_dvs, df_dd, df_do, df_dtv])
+
+df_all = pd.concat([df_davis, df_vaisala, df_icb, df_lufft, df_safonovskiy, df_sokol, df_minimax])
 
 df_all.to_excel('data/all_data.xlsx')
