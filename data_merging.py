@@ -19,4 +19,4 @@ df_minimax = pd.concat([df_dvg, df_dvn, df_dvs, df_dd, df_do, df_dtv])
 
 df_all = pd.concat([df_davis, df_vaisala, df_icb, df_lufft, df_safonovskiy, df_sokol, df_minimax])
 
-df_all.to_excel('data/all_data.xlsx')
+df_all.to_excel('data/all_data.xlsx', index=False)

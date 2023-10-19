@@ -51,7 +51,7 @@ def main():
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
 
-    all_data.to_excel(f'{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
+    all_data.to_excel(f'data/{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
 
 if __name__ == '__main__':
     main()
