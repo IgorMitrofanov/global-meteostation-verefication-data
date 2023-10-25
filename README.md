@@ -20,7 +20,9 @@
    
    1.6 Производитель Сокол-М1: Наименование СИ - "Станции", Тип СИ - СОКОЛ-М1;
 
-   1.7 Производитель Минимакс-94: Наименование СИ - "Датчики направления ветра", "Датчики скорости ветра", "Датчики осадков", "Датчики влажности и температуры грунта", "Датчики температуры и влажности воздуха", "Датчики атмосферного давления", Тип СИ "ДВН", "ДВС", "ДО", "ДВГ", "ДТВ", "ДД" соответственно.
+   1.7 Производитель Минимакс-94: Наименование СИ - "Датчики направления ветра", "Датчики скорости ветра", "Датчики осадков", "Датчики температуры и влажности воздуха", "Датчики атмосферного давления", Тип СИ "ДВН", "ДВС", "ДО", "ДТВ", "ДД" соответственно;
+
+   1.8 Производитель Бурстройпроект: Наименование СИ - "Датчики комплексные параметров атмосферы", Тип СИ - IWS.
 
 3. **Обработка данных**: Объединение спарсенных данных и добавление следующих полей:
    
@@ -64,7 +66,9 @@ This project consists of several stages:
 
    1.6 Manufacturer Sokol-M1: Name of SI - "Stations," SI Type - СОКОЛ-М1;
 
-   1.7 Manufacturer Minimax-94: Name of SI - "Wind Direction Sensors," "Wind Speed Sensors," "Precipitation Sensors," "Soil Humidity and Temperature Sensors," "Air Temperature and Humidity Sensors," "Atmospheric Pressure Sensors," SI Type "WDS," "WSS," "PS," "SH&TS," "ATHS," "APS," respectively.
+   1.7 Manufacturer Minimax-94: Name of SI - "Wind Direction Sensors," "Wind Speed Sensors," "Precipitation Sensors,"  "Air Temperature and Humidity Sensors," "Atmospheric Pressure Sensors," SI Type "WDS," "WSS," "PS," "ATHS," "APS," respectively.
+
+   1.8 Manufacturer Burstroyproect: Name of SI - "Sensors for complex atmospheric parameters," SI Type - IWS;
 
 3. **Data Processing**: Combine the parsed data and add the following fields:
 
