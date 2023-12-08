@@ -11,12 +11,11 @@ def get_data(params):
     df = pd.DataFrame(docs)
     return df
 
-def main():
+def main(mitype, mititle, year='*'):
     page = 0
-    year = '*'
-    mitype = '*IWS*' # Фильтр ТИП СИ
-    mititle = '*Датчики**комплексные**параметров**атмосферы*' # Фильтр НАИМЕНОВАНИЕ СИ
     filter_value = f'verification_year:{year} AND mi.mitype:{mitype} AND mi.mititle:{mititle}'
+
+
     rows_appended = 0
     all_data = pd.DataFrame()
 
@@ -54,5 +53,22 @@ def main():
     all_data.to_excel(f'data/{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
 
 if __name__ == '__main__':
-    main()
+    parameters_list = [
+    {'mitype': '*IWS*', 'mititle': '*Датчики**комплексные**параметров**атмосферы*'},
+    {'mitype': '*Vantage**Pro*', 'mititle': '*Станции*'},
+    {'mitype': '*WXT*', 'mititle': '*Метеостанции*'},
+    {'mitype': '*PWS*', 'mititle': '*Метеостанции*'},
+    {'mitype': '*WS**UMB*', 'mititle': '*Станции*'},
+    {'mitype': '*М-49М*', 'mititle': '*Станции*'},
+    {'mitype': '*СОКОЛ-М1*', 'mititle': '*Станции*'},
+    {'mitype': '*ДВН*', 'mititle': '*Датчики**направления**ветра*'},
+    {'mitype': '*ДВС*', 'mititle': '*Датчики**скорости**ветра*'},
+    {'mitype': '*ДО*', 'mititle': '*Датчики**осадков*'},
+    {'mitype': '*ДТВ*', 'mititle': '*Датчики**температуры**и**влажности**воздуха*'},
+    {'mitype': '*ДД*', 'mititle': '*Датчики**атмосферного**давления*'},
+    ]
+    for params in parameters_list:
+        print('Выгрузка: ', params['mitype'], params['mititle'])
+        main(params['mitype'], params['mititle'])
+        time.sleep(0.25)
 
