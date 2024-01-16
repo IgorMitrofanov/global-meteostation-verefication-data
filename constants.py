@@ -49,6 +49,6 @@ DB_LOGS_COLLECTION_NAME: str = 'logs_arch'
 DB_MAIN_TABLE_NAME: str = 'main_pivot'
 
 # Uploading time to schedule
-HOURS_UPLOADING: int = 17
-MINUTES_UPLOADING: int = 5
+HOURS_UPLOADING: int = 2
+MINUTES_UPLOADING: int = 0
 DAEMON_SLEEPING_TIME: int = 1
