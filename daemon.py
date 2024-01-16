@@ -28,12 +28,12 @@ def run_uploader():
         all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
         all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
 
-        logger.info(f'Date range in the data : {min(df['verification_date'])}-{max(df['verification_date'])}')
+        logger.info(f'Date range in the data : {min(all_data['verification_date'])}-{max(all_data['verification_date'])}')
 
         all_data = all_data.sort_values(by=['mi.number', 'verification_date']).copy()
 
         all_data['check'] = 'Периодическая'
-        first_check_mask = (all_data['result_text'] == 'Пригодно') & ~df.duplicated(subset='mi.number', keep='first')
+        first_check_mask = (all_data['result_text'] == 'Пригодно') & ~all_data.duplicated(subset='mi.number', keep='first')
         all_data.loc[first_check_mask, 'check'] = 'Первичная'
 
         first_check_date = all_data[first_check_mask].groupby('mi.number')['verification_date'].min()
