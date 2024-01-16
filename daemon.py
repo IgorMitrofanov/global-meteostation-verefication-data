@@ -24,23 +24,24 @@ def run_uploader():
             time.sleep(0.25)
             df = pd.read_csv(params['path'], encoding='utf-8')
             all_data = pd.concat([all_data, df], ignore_index=True)
-        df['valid_date'] = pd.to_datetime(df['valid_date']).dt.tz_localize(None)
-        df['verification_date'] = pd.to_datetime(df['verification_date']).dt.tz_localize(None)
+
+        all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
+        all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
 
         logger.info(f'Date range in the data : {min(df['verification_date'])}-{max(df['verification_date'])}')
 
-        df = df.sort_values(by=['mi.number', 'verification_date']).copy()
+        all_data = all_data.sort_values(by=['mi.number', 'verification_date']).copy()
 
-        df['check'] = 'Периодическая'
-        first_check_mask = (df['result_text'] == 'Пригодно') & ~df.duplicated(subset='mi.number', keep='first')
-        df.loc[first_check_mask, 'check'] = 'Первичная'
+        all_data['check'] = 'Периодическая'
+        first_check_mask = (all_data['result_text'] == 'Пригодно') & ~df.duplicated(subset='mi.number', keep='first')
+        all_data.loc[first_check_mask, 'check'] = 'Первичная'
 
-        first_check_date = df[first_check_mask].groupby('mi.number')['verification_date'].min()
-        df['station_age'] = (df['verification_date'] - df['mi.number'].map(first_check_date)).dt.days // 365
+        first_check_date = all_data[first_check_mask].groupby('mi.number')['verification_date'].min()
+        all_data['station_age'] = (all_data['verification_date'] - all_data['mi.number'].map(first_check_date)).dt.days // 365
 
-        df['verification_year'] = df['verification_date'].dt.year
+        all_data['verification_year'] = all_data['verification_date'].dt.year
 
-        df['mi.number'].value_counts()
+        all_data['mi.number'].value_counts()
 
         def rename_mitype(mitype):
             if 'Vantage Pro' in mitype:
@@ -61,9 +62,9 @@ def run_uploader():
                 return 'Бурстройпроект'
             return mitype
 
-        df['mi.manufacturer'] = df['mi.mitype'].apply(rename_mitype)
+        all_data['mi.manufacturer'] = all_data['mi.mitype'].apply(rename_mitype)
 
-        pivot_table = df.pivot_table(
+        pivot_table = all_data.pivot_table(
             index=['check', 'mi.manufacturer'], 
             columns='verification_year', 
             values='mi.mitnumber', 
