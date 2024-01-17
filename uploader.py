@@ -1,5 +1,6 @@
 # /uploading.py
 
+import os
 import requests
 import pandas as pd
 import time
@@ -67,5 +68,8 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
         
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
+
+    if not os.path.exists(DATA_DIR):
+        os.makedirs(DATA_DIR)
 
     all_data.to_csv(DATA_DIR + f'{year}_{mitype}_{mititle}.csv', index=False, encoding=ENCODING)

@@ -1,5 +1,5 @@
 /.git
 /.ipynb_checkpoints
-/venv
-/data
-/__pycache__
+/venv/
+/data/
+/__pycache__/
