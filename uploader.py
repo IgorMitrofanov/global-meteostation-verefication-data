@@ -4,8 +4,8 @@ import requests
 import pandas as pd
 import time
 from typing import Dict, Any
-
-from constants import DATA_URL
+import json
+from constants import DATA_URL, UPLOADER_TIMEOUT, ROWS_ON_PAGE, ENCODING, DATA_DIR
 from logger import get_logger
 
 logger = get_logger(__name__)
@@ -13,10 +13,20 @@ logger = get_logger(__name__)
 
 def get_df(url: str, filter_params: Dict[str, Any]) -> pd.DataFrame:
     response = requests.get(url, params=filter_params)
-    data = response.json()
-    docs = data.get('response', {}).get('docs', [])
-    df = pd.DataFrame(docs)
-    return df
+    
+    if response.status_code == 200:
+        try:
+            data = response.json()
+            docs = data.get('response', {}).get('docs', [])
+            df = pd.DataFrame(docs)
+            return df
+        except json.JSONDecodeError as e:
+            logger.error(f"Error decoding JSON: {e}")
+    else:
+        logger.error(f"Request failed with status code {response.status_code}")
+    
+    return pd.DataFrame()  # Вернуть пустой DataFrame в случае ошибки
+
 
 def uploading_by_the_filter(mitype, mititle, year='*'):
     page = 0
@@ -32,8 +42,8 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
             'q': '*',
             'fl': '*',
             'sort': 'verification_date desc,org_title asc',
-            'rows': 100,
-            'start': page * 100
+            'rows': ROWS_ON_PAGE,
+            'start': page * ROWS_ON_PAGE
         }
 
         df = get_df(url=DATA_URL, filter_params=filter_params)
@@ -50,7 +60,7 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
         all_data = pd.concat([all_data, df], ignore_index=True)
 
         page += 1
-        time.sleep(0.25)
+        time.sleep(UPLOADER_TIMEOUT)
 
     if year == '*':
         year = 'all_years'
@@ -58,4 +68,4 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
 
-    all_data.to_csv(f'data/{year}_{mitype}_{mititle}.csv', index=False, encoding='utf-8')
+    all_data.to_csv(DATA_DIR + f'{year}_{mitype}_{mititle}.csv', index=False, encoding=ENCODING)

@@ -2,11 +2,10 @@
 
 from scheduler import Scheduler
 
-from db.mongodb_manager import MongoDBManager
 from uploader import uploading_by_the_filter
-from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, \
-    DB_NAME, DB_HOST, DB_PORT, DB_MAIN_TABLE_NAME
+from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR, DB_HOST, DB_NAME, DB_PORT, DB_MAIN_TABLE_NAME
 import time
+from db.mongodb_manager import MongoDBManager
 import datetime
 import pandas as pd
 
@@ -22,9 +21,8 @@ def run_uploader():
             logger.info(f'Uploading by the filter: {params['mitype'], params['mititle']}')
             uploading_by_the_filter(params['mitype'], params['mititle'])
             time.sleep(0.25)
-            df = pd.read_csv(params['path'], encoding='utf-8')
+            df = pd.read_csv(params['path'], encoding=ENCODING)
             all_data = pd.concat([all_data, df], ignore_index=True)
-
         all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
         all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
 
@@ -64,6 +62,8 @@ def run_uploader():
 
         all_data['mi.manufacturer'] = all_data['mi.mitype'].apply(rename_mitype)
 
+        all_data.to_csv(DATA_DIR + 'all_data.csv', index=False, encoding=ENCODING)
+
         pivot_table = all_data.pivot_table(
             index=['check', 'mi.manufacturer'], 
             columns='verification_year', 
@@ -77,16 +77,25 @@ def run_uploader():
         for check in checks:
             pivot_table.loc[(check, 'Минимакс-94')] = pivot_table.loc[(check, 'Минимакс-94')] // 4
 
-        pivot_table.to_csv('data/main_pivot.csv', encoding='utf-8')
-        all_data.to_csv('data/all_data.csv', index=False, encoding='utf-8')
+        pivot_table.to_csv(DATA_DIR + 'main_pivot.csv', encoding=ENCODING)
 
+        pivot_table = pd.read_csv('data/main_pivot.csv', encoding=ENCODING)
 
-        # Save the data to MongoDB using the MongoDBManager class
+        pivot_table_dict = pivot_table.to_dict('records')
+
+        new_structure = {}
+
+        for entry in pivot_table_dict:
+            key = f"{entry['check']}-{entry['mi.manufacturer']}"
+            entry.pop('check')
+            entry.pop('mi.manufacturer')
+            new_structure[key] = {str(k): v for k, v in entry.items()}
+
         mongo_manager = MongoDBManager(db_host=DB_HOST, db_port=DB_PORT, db_name=DB_NAME)
-        mongo_manager.save_data(data=pivot_table, table_name=DB_MAIN_TABLE_NAME)
 
+        mongo_manager.save_data(data=new_structure, table_name=DB_MAIN_TABLE_NAME)
 
-        logger.info('The data was saved in csv.')
+        logger.info('The all data was saved in csv and main pivot saved to mongodb.')
 
     except Exception as e:
         logger.error('Error in run_scraper_and_processor: %s', str(e))

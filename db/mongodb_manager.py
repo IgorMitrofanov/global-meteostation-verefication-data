@@ -1,7 +1,7 @@
 # db/mongodb_manager.py
 
 """
-mongodb_manager.py - MongoDB Manager Module for sokolmeteo.com Statistics Tables
+mongodb_manager.py - MongoDB Manager Module.
 
 This module provides a MongoDBManager class, implementing the IDBManager interface,
 for handling MongoDB database interactions. It uses the pymongo library for MongoDB interactions.
