@@ -50,7 +50,7 @@ def main(mitype, mititle, year='*'):
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
 
-    all_data.to_excel(f'data/{year}_{mitype}_{mititle}.xlsx', index=False, engine='openpyxl')
+    all_data.to_csv(f'data/{year}_{mitype}_{mititle}.csv', index=False, encoding='utf-8')
 
 if __name__ == '__main__':
     parameters_list = [
