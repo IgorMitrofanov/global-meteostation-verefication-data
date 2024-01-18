@@ -100,7 +100,7 @@ def run_uploader():
     except Exception as e:
         logger.error('Error in run_scraper_and_processor: %s', str(e))
 
-def upload_daemon():
+def run_upload_daemon():
     schedule = Scheduler()
     trigger_time = datetime.time(hour=HOURS_UPLOADING, minute=MINUTES_UPLOADING)
     schedule.daily(timing=trigger_time, handle=run_uploader)

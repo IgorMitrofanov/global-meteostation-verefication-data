@@ -1,14 +1,15 @@
 # /main.py
 
 import threading
-from daemon import upload_daemon
-
-
-def start_upload_daemon():
-    scrape_thread = threading.Thread(target=upload_daemon, daemon=True)
-    scrape_thread.start()
-    scrape_thread.join() # wait for the thread finished
+from daemon import run_upload_daemon
+from dashboard.app import run_dashboard_app
 
 
 if __name__ == '__main__':
-    start_upload_daemon()
+    dashboard_thread = threading.Thread(target=run_dashboard_app, daemon=True)
+    upload_daemon_thread = threading.Thread(target=run_upload_daemon, daemon=True)
+
+    dashboard_thread.start()
+    upload_daemon_thread.start()
+
+    dashboard_thread.join()

@@ -33,4 +33,3 @@ Date:
 
 from .manager_interface import IDBManager
 from .mongodb_manager import MongoDBManager
-from .exceptions import DocumentNotFound

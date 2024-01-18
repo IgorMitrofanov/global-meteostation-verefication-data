@@ -47,7 +47,6 @@ from datetime import datetime
 from pymongo import MongoClient
 
 from db.manager_interface import IDBManager
-from db.exceptions import DocumentNotFound
 
 from logger import get_logger
 
@@ -124,4 +123,4 @@ class MongoDBManager(IDBManager):
                 logger.error(f"The document from table: {table_name} with upload date: {upload_date} does not contain the data key")
         else:
             msg = f"Document from table: {table_name} with upload date: {upload_date} not found."
-            raise DocumentNotFound(msg)
+            raise Exception(msg)
