@@ -63,5 +63,5 @@ DATA_DIR = "data/"
 
 # Server
 
-SERVER_HOST: str = "192.168.54.82"
+SERVER_HOST: str = "localhost"
 SERVER_PORT: int = 8050

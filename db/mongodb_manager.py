@@ -1,7 +1,7 @@
 # db/mongodb_manager.py
 
 """
-mongodb_manager.py - MongoDB Manager Module.
+mongodb_manager.py - MongoDB Manager Module for sokolmeteo.com Statistics Tables
 
 This module provides a MongoDBManager class, implementing the IDBManager interface,
 for handling MongoDB database interactions. It uses the pymongo library for MongoDB interactions.
@@ -41,12 +41,13 @@ Author:
 Date:
     05/12/2023
 """
-
+import os
 from typing import List, Dict, Any
 from datetime import datetime
 from pymongo import MongoClient
 
 from db.manager_interface import IDBManager
+from db.exceptions import DocumentNotFound
 
 from logger import get_logger
 
@@ -61,7 +62,7 @@ class MongoDBManager(IDBManager):
     Attributes:
         - db (pymongo.database.Database): The MongoDB database instance.
     """
-    def __init__(self, db_host: str, db_port: int, db_name: str) -> None:
+    def __init__(self) -> None:
         """
         Initializes the MongoDBManager instance.
 
@@ -71,8 +72,14 @@ class MongoDBManager(IDBManager):
             - db_name (str): The name of the MongoDB database.
         """
         super().__init__()
-        mongo_client = MongoClient(host=db_host, port=db_port)
-        self.db = mongo_client[db_name]
+        MONGO_HOST = os.getenv("MONGO_HOST")
+        MONGO_PORT = int(os.getenv("MONGO_PORT"))
+        DB_NAME = os.getenv("DB_NAME")
+        DB_USER = os.getenv("DB_USER")
+        DB_PASSWORD = os.getenv("DB_PASSWORD")
+
+        client = MongoClient(host=MONGO_HOST, port=MONGO_PORT, username=DB_USER, password=DB_PASSWORD)
+        self.db = client.get_database(DB_NAME)
 
     def save_data(self, data: List[Dict[str, Any]], table_name: str) -> None:
         """
@@ -108,7 +115,7 @@ class MongoDBManager(IDBManager):
             - upload_date (str): The date for which data needs to be loaded.
 
         Returns:
-            List[Dict[str, Any]]: The loaded data from the collection.
+            List[Dict[str, Any]]: The loaded data from the collection.  # Тут возвращается  Тип данных: <class 'dict'> !
 
         Raises:
             DocumentNotFound: If the document for the specified date is not found in the collection.
@@ -123,4 +130,4 @@ class MongoDBManager(IDBManager):
                 logger.error(f"The document from table: {table_name} with upload date: {upload_date} does not contain the data key")
         else:
             msg = f"Document from table: {table_name} with upload date: {upload_date} not found."
-            raise Exception(msg)
+            raise DocumentNotFound(msg)
