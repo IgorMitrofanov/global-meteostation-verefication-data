@@ -2,14 +2,14 @@
 
 from scheduler import Scheduler
 import threading
-from uploader import uploading_by_the_filter
+from scraper.uploader import uploading_by_the_filter
 from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR, DB_HOST, DB_NAME, DB_PORT, DB_MAIN_TABLE_NAME
 import time
 from db.mongodb_manager import MongoDBManager
 import datetime
 import pandas as pd
 
-from logger import get_logger
+from scraper.logger import get_logger
 
 logger = get_logger(__name__)
 

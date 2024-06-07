@@ -5,7 +5,6 @@ import dash_mantine_components as dmc
 from dash_express import DashExpress, Page
 from dash import html
 
-from constants import SERVER_HOST, SERVER_PORT
 from dashboard.build_functions import pie_manufactures, bar_chart_veriffy_manufactures, bar_chart_avg_age, hist_manufacturer_groups, pivot_table, facetgrid_plot_age
 
 get_df_all = lambda: pd.read_csv('data/all_data.csv')

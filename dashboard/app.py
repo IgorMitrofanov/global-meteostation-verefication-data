@@ -5,11 +5,11 @@ import dash_mantine_components as dmc
 from dash_express import DashExpress, Page
 from dash import html
 
-from dashboard.build_functions import pie_manufactures, bar_chart_veriffy_manufactures, bar_chart_avg_age, hist_manufacturer_groups, pivot_table, facetgrid_plot_age
+from build_functions import pie_manufactures, bar_chart_veriffy_manufactures, bar_chart_avg_age, hist_manufacturer_groups, pivot_table, facetgrid_plot_age
 
-get_df_all = lambda: pd.read_csv('data/all_data.csv')
+get_df_all = lambda: pd.read_csv('data/all_data.csv') # заменить на БД метод
 
-get_df_main_pivot = lambda: pd.read_csv('data/main_pivot.csv')
+get_df_main_pivot = lambda: pd.read_csv('data/main_pivot.csv') # заменить на БД метод
 
 app = DashExpress(logo='Витрина данных по поверке СИ', default_cache_timeout=10)
 
@@ -66,4 +66,5 @@ page_visual.add_autofilter('verification_year', multi=True, label='Год пов
 # app.run(host="192.168.54.86")
 
 def run_dashboard_app():
-    app.run(host="192.168.54.86")
+    
+    app.run(host="192.168.54.86") # здесь будет имя хоста из env var

@@ -2,29 +2,29 @@
 
 from scheduler import Scheduler
 
-from uploader import uploading_by_the_filter
-from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR, DB_HOST, DB_NAME, DB_PORT, DB_MAIN_TABLE_NAME
+from uploader import get_df_by_the_filter
+from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR
 import time
 from db.mongodb_manager import MongoDBManager
 import datetime
 import pandas as pd
-
 from logger import get_logger
 
 logger = get_logger(__name__)
 
 
 def run_uploader():
+    mongo_manager = MongoDBManager()
     try:
         all_data = pd.DataFrame()
         for params in PARAMETERS_LIST:
             logger.info(f'Uploading by the filter: {params['mitype'], params['mititle']}')
-            uploading_by_the_filter(params['mitype'], params['mititle'])
-            time.sleep(0.25)
-            df = pd.read_csv(params['path'], encoding=ENCODING)
+            data = get_df_by_the_filter(params['mitype'], params['mititle']) # запись в бд
+            df = pd.DataFrame(data)
             all_data = pd.concat([all_data, df], ignore_index=True)
-        all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
-        all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
+        print(all_data['valid_date'].isna().mean(),  all_data['verification_date'].isna().mean()) # has nan, hasn't nan
+        all_data['valid_date'] = pd.to_datetime(all_data['valid_date']) #.dt.tz_localize(None)
+        all_data['verification_date'] = pd.to_datetime(all_data['verification_date']) #.dt.tz_localize(None)
 
         logger.info(f'Date range in the data : {min(all_data['verification_date'])}-{max(all_data['verification_date'])}')
 
@@ -62,7 +62,7 @@ def run_uploader():
 
         all_data['mi.manufacturer'] = all_data['mi.mitype'].apply(rename_mitype)
 
-        all_data.to_csv(DATA_DIR + 'all_data.csv', index=False, encoding=ENCODING)
+        mongo_manager.save_data(data=all_data.to_dict("records"), table_name="all_data")
 
         pivot_table = all_data.pivot_table(
             index=['check', 'mi.manufacturer'], 
@@ -77,10 +77,6 @@ def run_uploader():
         for check in checks:
             pivot_table.loc[(check, 'Минимакс-94')] = pivot_table.loc[(check, 'Минимакс-94')] // 4
 
-        pivot_table.to_csv(DATA_DIR + 'main_pivot.csv', encoding=ENCODING)
-
-        pivot_table = pd.read_csv('data/main_pivot.csv', encoding=ENCODING)
-
         pivot_table_dict = pivot_table.to_dict('records')
 
         new_structure = {}
@@ -91,11 +87,9 @@ def run_uploader():
             entry.pop('mi.manufacturer')
             new_structure[key] = {str(k): v for k, v in entry.items()}
 
-        mongo_manager = MongoDBManager(db_host=DB_HOST, db_port=DB_PORT, db_name=DB_NAME)
+        mongo_manager.save_data(data=new_structure, table_name="main_pivot")
 
-        mongo_manager.save_data(data=new_structure, table_name=DB_MAIN_TABLE_NAME)
-
-        logger.info('The all data was saved in csv and main pivot saved to mongodb.')
+        logger.info('The all data was saved and main pivot saved to mongodb.')
 
     except Exception as e:
         logger.error('Error in run_scraper_and_processor: %s', str(e))
