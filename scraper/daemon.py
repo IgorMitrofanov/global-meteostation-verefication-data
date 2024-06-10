@@ -3,13 +3,12 @@
 from scheduler import Scheduler
 
 from uploader import get_df_by_the_filter
-from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR
+from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME
 import time
 from db.mongodb_manager import MongoDBManager
 import datetime
 import pandas as pd
 from logger import get_logger
-
 logger = get_logger(__name__)
 
 
@@ -22,9 +21,8 @@ def run_uploader():
             data = get_df_by_the_filter(params['mitype'], params['mititle']) # запись в бд
             df = pd.DataFrame(data)
             all_data = pd.concat([all_data, df], ignore_index=True)
-        print(all_data['valid_date'].isna().mean(),  all_data['verification_date'].isna().mean()) # has nan, hasn't nan
-        all_data['valid_date'] = pd.to_datetime(all_data['valid_date']) #.dt.tz_localize(None)
-        all_data['verification_date'] = pd.to_datetime(all_data['verification_date']) #.dt.tz_localize(None)
+        all_data['valid_date'] = all_data['valid_date'].apply(lambda x: pd.to_datetime(x).dt.tz_localize(None) if x is None else 'no_data')
+        all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
 
         logger.info(f'Date range in the data : {min(all_data['verification_date'])}-{max(all_data['verification_date'])}')
 
@@ -77,17 +75,8 @@ def run_uploader():
         for check in checks:
             pivot_table.loc[(check, 'Минимакс-94')] = pivot_table.loc[(check, 'Минимакс-94')] // 4
 
-        pivot_table_dict = pivot_table.to_dict('records')
-
-        new_structure = {}
-
-        for entry in pivot_table_dict:
-            key = f"{entry['check']}-{entry['mi.manufacturer']}"
-            entry.pop('check')
-            entry.pop('mi.manufacturer')
-            new_structure[key] = {str(k): v for k, v in entry.items()}
-
-        mongo_manager.save_data(data=new_structure, table_name="main_pivot")
+        pivot_table.reset_index(inplace=True)
+        mongo_manager.save_data(data=pivot_table.to_dict("tight"), table_name="main_pivot")
 
         logger.info('The all data was saved and main pivot saved to mongodb.')
 

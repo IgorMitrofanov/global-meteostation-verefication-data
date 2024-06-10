@@ -52,7 +52,7 @@ def get_df_by_the_filter(mitype, mititle, year='*'):
         logger.debug('Preview:')
         logger.debug(df)
         rows_appended += df.shape[0]
-        logger.info(f'Lines saved: {rows_appended}.')
+        logger.debug(f'Lines saved: {rows_appended}.')
 
         all_data = pd.concat([all_data, df], ignore_index=True)
 
@@ -64,5 +64,5 @@ def get_df_by_the_filter(mitype, mititle, year='*'):
         
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
-
+    logger.info(f"uploaded rows: {rows_appended}")
     return all_data
