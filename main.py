@@ -1,15 +1,21 @@
 # /main.py
 
 import threading
-from daemon import run_upload_daemon
+from scraper.run_daemon import run_upload_daemon, run_uploader
 from dashboard.app import run_dashboard_app
 
 
 if __name__ == '__main__':
-    dashboard_thread = threading.Thread(target=run_dashboard_app, daemon=True)
+
+    try:
+        run_uploader()
+    except Exception as e:
+        pass
+
     upload_daemon_thread = threading.Thread(target=run_upload_daemon, daemon=True)
+    dashboard_app_thread = threading.Thread(target=run_dashboard_app, daemon=True)
 
-    dashboard_thread.start()
     upload_daemon_thread.start()
-
-    dashboard_thread.join()
+    dashboard_app_thread.start()
+    upload_daemon_thread.join()
+    dashboard_app_thread.join()

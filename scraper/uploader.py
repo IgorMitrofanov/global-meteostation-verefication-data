@@ -6,15 +6,13 @@ import pandas as pd
 import time
 from typing import Dict, Any
 import json
-from constants import DATA_URL, UPLOADER_TIMEOUT, ROWS_ON_PAGE, ENCODING, DATA_DIR
-from logger import get_logger
+from scraper.constants import DATA_URL, UPLOADER_TIMEOUT, ROWS_ON_PAGE
+from scraper.logger import get_logger
 
 logger = get_logger(__name__)
 
-
 def get_df(url: str, filter_params: Dict[str, Any]) -> pd.DataFrame:
     response = requests.get(url, params=filter_params)
-    
     if response.status_code == 200:
         try:
             data = response.json()
@@ -25,14 +23,12 @@ def get_df(url: str, filter_params: Dict[str, Any]) -> pd.DataFrame:
             logger.error(f"Error decoding JSON: {e}")
     else:
         logger.error(f"Request failed with status code {response.status_code}")
-    
     return pd.DataFrame()  # Вернуть пустой DataFrame в случае ошибки
 
 
-def uploading_by_the_filter(mitype, mititle, year='*'):
+def get_df_by_the_filter(mitype, mititle, year='*'):
     page = 0
     filter_value = f'verification_year:{year} AND mi.mitype:{mitype} AND mi.mititle:{mititle}'
-
 
     rows_appended = 0
     all_data = pd.DataFrame()
@@ -56,7 +52,7 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
         logger.debug('Preview:')
         logger.debug(df)
         rows_appended += df.shape[0]
-        logger.info(f'Lines saved: {rows_appended}.')
+        logger.debug(f'Lines saved: {rows_appended}.')
 
         all_data = pd.concat([all_data, df], ignore_index=True)
 
@@ -68,8 +64,5 @@ def uploading_by_the_filter(mitype, mititle, year='*'):
         
     mitype = mitype.replace('*', '')
     mititle = mititle.replace('*', '')
-
-    if not os.path.exists(DATA_DIR):
-        os.makedirs(DATA_DIR)
-
-    all_data.to_csv(DATA_DIR + f'{year}_{mitype}_{mititle}.csv', index=False, encoding=ENCODING)
+    logger.info(f"uploaded rows: {rows_appended}")
+    return all_data

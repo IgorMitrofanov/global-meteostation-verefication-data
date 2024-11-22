@@ -41,16 +41,9 @@ PARAMETERS_LIST = [
 
 DATA_URL = "https://fgis.gost.ru/fundmetrology/cm/xcdb/vri/select"
 
-# MongoDB connection
-DB_HOST: str = '192.168.54.82'
-DB_PORT: int = 27017
-DB_NAME: str = 'meteo-stations-veriffy-db'
-DB_LOGS_COLLECTION_NAME: str = 'logs_arch'
-DB_MAIN_TABLE_NAME: str = 'main_pivot'
-
 # Uploading time to schedule
-HOURS_UPLOADING: int = 15
-MINUTES_UPLOADING: int = 6
+HOURS_UPLOADING: int = 11
+MINUTES_UPLOADING: int = 20
 DAEMON_SLEEPING_TIME: int = 1
 
 # Uploader 
@@ -60,8 +53,3 @@ ROWS_ON_PAGE: int = 100
 # Data
 ENCODING = "utf-8"
 DATA_DIR = "data/"
-
-# Server
-
-SERVER_HOST: str = "localhost"
-SERVER_PORT: int = 8050
