@@ -31,26 +31,6 @@ Date:
 """
 import os
 import logging
-from pymongo import MongoClient
-from pymongo.collection import Collection
-
-class MongoDBHandler(logging.Handler):
-    def __init__(self, collection: Collection):
-        super().__init__()
-        self.collection = collection
-        self.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-
-    def emit(self, record):
-        log_entry = {
-            "asctime": record.asctime,
-            "levelname": record.levelname,
-            "module": record.module,
-            "function": record.funcName,
-            "name" : record.name, 
-            "thread": record.thread,
-            "message": str(record.msg),
-        }
-        self.collection.insert_one(log_entry)
 
 
 class MainLogger(logging.Logger):
@@ -87,26 +67,6 @@ def get_logger(module_name):
     Returns:
         logging.Logger: The logger instance.
     """
-    # MONGO_HOST = os.getenv("MONGO_HOST")
-    # MONGO_PORT = int(os.getenv("MONGO_PORT"))
-    # DB_NAME = os.getenv("DB_NAME")
-    # DB_LOGS_COLLECTION_NAME = "logs"
-    # DB_USER = os.getenv("DB_USER")
-    # DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-    MONGO_HOST = "192.168.54.17"
-    MONGO_PORT = 27017
-    DB_NAME = "METEO_VEREFICATION_DB"
-    DB_USER = "dev"
-    DB_PASSWORD = "mongo9181"
-    DB_LOGS_COLLECTION_NAME = "scraper_logs"
-
-
-    client = MongoClient(MONGO_HOST, MONGO_PORT, username=DB_USER, password=DB_PASSWORD)
-    db = client[DB_NAME]
-    collection = db[DB_LOGS_COLLECTION_NAME]
-    
-    mongo_handler = MongoDBHandler(collection)
     logger = MainLogger(module_name)
-    logger.addHandler(mongo_handler)
     return logger

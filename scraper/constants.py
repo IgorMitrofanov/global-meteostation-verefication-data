@@ -42,15 +42,14 @@ PARAMETERS_LIST = [
 DATA_URL = "https://fgis.gost.ru/fundmetrology/cm/xcdb/vri/select"
 
 # Uploading time to schedule
-HOURS_UPLOADING: int = 15
-MINUTES_UPLOADING: int = 16
+HOURS_UPLOADING: int = 11
+MINUTES_UPLOADING: int = 20
 DAEMON_SLEEPING_TIME: int = 1
 
 # Uploader 
 UPLOADER_TIMEOUT: str = 0.5
 ROWS_ON_PAGE: int = 100
 
-# Server
-
-SERVER_HOST: str = "localhost"
-SERVER_PORT: int = 8050
+# Data
+ENCODING = "utf-8"
+DATA_DIR = "data/"

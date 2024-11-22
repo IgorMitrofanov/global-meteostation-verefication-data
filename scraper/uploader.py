@@ -6,8 +6,8 @@ import pandas as pd
 import time
 from typing import Dict, Any
 import json
-from constants import DATA_URL, UPLOADER_TIMEOUT, ROWS_ON_PAGE
-from logger import get_logger
+from scraper.constants import DATA_URL, UPLOADER_TIMEOUT, ROWS_ON_PAGE
+from scraper.logger import get_logger
 
 logger = get_logger(__name__)
 

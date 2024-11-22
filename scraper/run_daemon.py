@@ -2,10 +2,10 @@
 
 from scheduler import Scheduler
 import threading
-from scraper.uploader import uploading_by_the_filter
-from constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR, DB_HOST, DB_NAME, DB_PORT, DB_MAIN_TABLE_NAME
+from scraper.uploader import get_df_by_the_filter
+from scraper.constants import PARAMETERS_LIST, HOURS_UPLOADING, MINUTES_UPLOADING, DAEMON_SLEEPING_TIME, ENCODING, DATA_DIR
 import time
-from db.mongodb_manager import MongoDBManager
+#from db.mongodb_manager import MongoDBManager
 import datetime
 import pandas as pd
 
@@ -19,9 +19,8 @@ def run_uploader():
         all_data = pd.DataFrame()
         for params in PARAMETERS_LIST:
             logger.info(f'Uploading by the filter: {params['mitype'], params['mititle']}')
-            uploading_by_the_filter(params['mitype'], params['mititle'])
+            df = get_df_by_the_filter(params['mitype'], params['mititle'])
             time.sleep(0.25)
-            df = pd.read_csv(params['path'], encoding=ENCODING)
             all_data = pd.concat([all_data, df], ignore_index=True)
         all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
         all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)
@@ -91,9 +90,7 @@ def run_uploader():
             entry.pop('mi.manufacturer')
             new_structure[key] = {str(k): v for k, v in entry.items()}
 
-        mongo_manager = MongoDBManager(db_host=DB_HOST, db_port=DB_PORT, db_name=DB_NAME)
-
-        mongo_manager.save_data(data=new_structure, table_name=DB_MAIN_TABLE_NAME)
+        new_structure
 
         logger.info('The all data was saved in csv and main pivot saved to mongodb.')
 
@@ -113,11 +110,3 @@ def run_upload_daemon():
     while True:
         schedule.exec_jobs()
         time.sleep(DAEMON_SLEEPING_TIME)
-
-
-if __name__ == '__main__':
-    upload_daemon_thread = threading.Thread(target=run_upload_daemon, daemon=True)
-
-    upload_daemon_thread.start()
-
-    upload_daemon_thread.join()
