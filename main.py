@@ -7,10 +7,7 @@ from dashboard.app import run_dashboard_app
 
 if __name__ == '__main__':
 
-    try:
-        run_uploader()
-    except Exception as e:
-        pass
+    
 
     upload_daemon_thread = threading.Thread(target=run_upload_daemon, daemon=True)
     dashboard_app_thread = threading.Thread(target=run_dashboard_app, daemon=True)

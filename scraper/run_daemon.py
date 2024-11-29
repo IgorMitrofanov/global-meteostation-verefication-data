@@ -20,7 +20,7 @@ def run_uploader():
         for params in PARAMETERS_LIST:
             logger.info(f'Uploading by the filter: {params['mitype'], params['mititle']}')
             df = get_df_by_the_filter(params['mitype'], params['mititle'])
-            time.sleep(0.25)
+            time.sleep(1)
             all_data = pd.concat([all_data, df], ignore_index=True)
         all_data['valid_date'] = pd.to_datetime(all_data['valid_date']).dt.tz_localize(None)
         all_data['verification_date'] = pd.to_datetime(all_data['verification_date']).dt.tz_localize(None)

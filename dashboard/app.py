@@ -68,4 +68,4 @@ def run_dashboard_app():
     page_visual.add_autofilter('check', multi=True, label='Тип поверки')
     page_visual.add_autofilter('verification_year', multi=True, label='Год поверки', type='select')
     
-    app.run(host="37.230.174.163", port="8080") # здесь будет имя хоста из env var
+    app.run(host="0.0.0.0", port="8080") # здесь будет имя хоста из env var
